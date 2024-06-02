@@ -50,8 +50,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -84,36 +86,49 @@ class MainActivity : ComponentActivity() {
                             Box(
                                 modifier = Modifier
                                     .width(200.dp)
-                                    .height(120.dp),
+                                    .height(120.dp)
+                                    .clip(RoundedCornerShape(10.dp))
+                                    .drawWithContent {
+                                        drawContent()
+                                        drawRect(
+                                            color = Color.Red,
+                                            blendMode = BlendMode.Luminosity,
+                                            alpha = 0.3f,
+                                        )
+                                    }
+                                ,
                                 contentAlignment = Alignment.Center
 
                             ) {
+
                                 Canvas(modifier = Modifier.fillMaxSize()) {
+
                                     val textPaint = android.graphics.Paint().apply {
                                         textSize = 100f
-                                        color = android.graphics.Color.YELLOW
+                                        color = android.graphics.Color.RED
                                         isAntiAlias = true
                                         blendMode = android.graphics.BlendMode.LUMINOSITY
+                                        alpha = 85 // 30%
                                     }
 
                                     drawIntoCanvas { canvas ->
                                         // 텍스트를 그립니다
                                         canvas.nativeCanvas.drawText(
                                             "Hello World",
-                                            0f,
-                                            this.size.height / 2,
-                                            textPaint
+                                            this.size.width * 0.05f,
+                                            this.size.height * 0.55f,
+                                            textPaint,
                                         )
 
                                         // BlendMode가 적용된 사각형을 그립니다
 
-                                        drawRect(
-                                            color = Color.Red,
-                                            topLeft = Offset.Zero,
-                                            size = size,
-                                            blendMode = BlendMode.Luminosity,
-                                            alpha = 0.3f
-                                        )
+//                                        drawRect(
+//                                            color = Color.Red,
+//                                            topLeft = Offset.Zero,
+//                                            size = size,
+//                                            blendMode = BlendMode.Luminosity,
+//                                            alpha = 0.3f
+//                                        )
                                     }
                                 }
                             }
