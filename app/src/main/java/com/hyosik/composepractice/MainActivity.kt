@@ -56,11 +56,17 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.view.WindowCompat
+import com.hyosik.composepractice.ui.BottomSheet
 
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // 시스템 바(예: 상태 바, 네비게이션 바) 뒤에 콘텐츠를 그릴 수 있게 하는 데 사용됩니다.
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
         setContent {
             ComposePracticeTheme {
                 // A surface container using the 'background' color from the theme
@@ -79,62 +85,83 @@ class MainActivity : ComponentActivity() {
                         }
 
                         Button(onClick = { isShow = !isShow }) {
-                            Text(text = "다이얼로그 클릭")
+                            Text(text = "바텀시트 오픈")
                         }
 
-                        if(isShow){
-                            Box(
-                                modifier = Modifier
-                                    .width(200.dp)
-                                    .height(120.dp)
-                                    .clip(RoundedCornerShape(10.dp))
-                                    .drawWithContent {
-                                        drawContent()
-                                        drawRect(
-                                            color = Color.Red,
-                                            blendMode = BlendMode.Luminosity,
-                                            alpha = 0.3f,
-                                        )
-                                    }
-                                ,
-                                contentAlignment = Alignment.Center
-
-                            ) {
-
-                                Canvas(modifier = Modifier.fillMaxSize()) {
-
-                                    val textPaint = android.graphics.Paint().apply {
-                                        textSize = 100f
-                                        color = android.graphics.Color.RED
-                                        isAntiAlias = true
-                                        blendMode = android.graphics.BlendMode.LUMINOSITY
-                                        alpha = 85 // 30%
-                                    }
-
-                                    drawIntoCanvas { canvas ->
-                                        // 텍스트를 그립니다
-                                        canvas.nativeCanvas.drawText(
-                                            "Hello World",
-                                            this.size.width * 0.05f,
-                                            this.size.height * 0.55f,
-                                            textPaint,
-                                        )
-
-                                        // BlendMode가 적용된 사각형을 그립니다
-
+//                        if(isShow){
+//                            Box(
+//                                modifier = Modifier
+//                                    .width(200.dp)
+//                                    .height(120.dp)
+//                                    .clip(RoundedCornerShape(10.dp))
+//                                    .drawWithContent {
+//                                        drawContent()
 //                                        drawRect(
 //                                            color = Color.Red,
-//                                            topLeft = Offset.Zero,
-//                                            size = size,
 //                                            blendMode = BlendMode.Luminosity,
-//                                            alpha = 0.3f
+//                                            alpha = 0.3f,
 //                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
+//                                    }
+//                                ,
+//                                contentAlignment = Alignment.Center
+//
+//                            ) {
+//
+//                                Canvas(modifier = Modifier.fillMaxSize()) {
+//
+//                                    val textPaint = android.graphics.Paint().apply {
+//                                        textSize = 100f
+//                                        color = android.graphics.Color.RED
+//                                        isAntiAlias = true
+//                                        blendMode = android.graphics.BlendMode.LUMINOSITY
+//                                        alpha = 85 // 30%
+//                                    }
+//
+//                                    drawIntoCanvas { canvas ->
+//                                        // 텍스트를 그립니다
+//                                        canvas.nativeCanvas.drawText(
+//                                            "Hello World",
+//                                            this.size.width * 0.05f,
+//                                            this.size.height * 0.55f,
+//                                            textPaint,
+//                                        )
+//
+//                                        // BlendMode가 적용된 사각형을 그립니다
+//
+////                                        drawRect(
+////                                            color = Color.Red,
+////                                            topLeft = Offset.Zero,
+////                                            size = size,
+////                                            blendMode = BlendMode.Luminosity,
+////                                            alpha = 0.3f
+////                                        )
+//                                    }
+//                                }
+//                            }
+//                        }
 
+                        if (isShow) BottomSheet(
+                            dragBackgroundColor = Color.Blue,
+                            content = {
+                                Column(
+                                    modifier = Modifier
+                                        .background(color = Color.Blue)
+                                        .fillMaxWidth()
+                                        .wrapContentHeight(),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Column {
+                                        Text(
+                                            modifier = Modifier.padding(20.dp),
+                                            text = "Main Content"
+                                        )
+                                    }
+
+                                }
+                            },
+                            onDismiss = { isShow = false }
+                        )
+                    }
                 }
             }
         }
