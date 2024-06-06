@@ -2,7 +2,9 @@ package com.hyosik.composepractice
 
 import android.os.Build
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.text.TextPaint
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
@@ -50,6 +52,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.*
@@ -58,6 +63,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
 import com.hyosik.composepractice.ui.BottomSheet
+import kotlinx.coroutines.delay
 
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -140,33 +146,55 @@ class MainActivity : ComponentActivity() {
 //                            }
 //                        }
 
-                        if (isShow) BottomSheet(
-                            dragBackgroundColor = Color.Blue,
-                            content = {
-                                Column(
-                                    modifier = Modifier
-                                        .background(color = Color.Blue)
-                                        .fillMaxWidth()
-                                        .wrapContentHeight(),
-                                    horizontalAlignment = Alignment.CenterHorizontally
-                                ) {
-                                    Column {
-                                        Text(
-                                            modifier = Modifier.padding(20.dp),
-                                            text = "Main Content"
-                                        )
-                                    }
+                        var timer by rememberSaveable {
+                            mutableLongStateOf(30L)
+                        }
 
+
+                        if (isShow) {
+
+                            val countDownTimer = object : CountDownTimer(30000, 1000) {
+
+                                override fun onTick(time: Long) {
+                                    timer = time / 1000L
                                 }
-                            },
-                            onDismiss = { isShow = false }
-                        )
+
+                                override fun onFinish() {
+                                    start()
+                                }
+                            }
+
+                            countDownTimer.start()
+
+                            BottomSheet(
+                                dragBackgroundColor = Color.Blue,
+                                content = {
+                                    Column(
+                                        modifier = Modifier
+                                            .background(color = Color.Blue)
+                                            .fillMaxWidth()
+                                            .wrapContentHeight(),
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        Column {
+                                            Text(
+                                                modifier = Modifier.padding(20.dp),
+                                                text = "타이머 : $timer 초"
+                                            )
+                                        }
+
+                                    }
+                                },
+                                onDismiss = { isShow = false }
+                            )
+                        }
                     }
                 }
             }
         }
     }
 }
+
 
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
