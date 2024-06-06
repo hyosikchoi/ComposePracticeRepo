@@ -63,6 +63,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
 import com.hyosik.composepractice.ui.BottomSheet
+import com.hyosik.composepractice.ui.CustomDialog
 import kotlinx.coroutines.delay
 
 class MainActivity : ComponentActivity() {
@@ -90,8 +91,16 @@ class MainActivity : ComponentActivity() {
                             mutableStateOf(false)
                         }
 
+                        var isShowDialog by rememberSaveable {
+                            mutableStateOf(false)
+                        }
+
                         Button(onClick = { isShow = !isShow }) {
                             Text(text = "바텀시트 오픈")
+                        }
+
+                        Button(onClick = { isShowDialog = !isShowDialog }) {
+                            Text(text = "다이얼로그 오픈")
                         }
 
 //                        if(isShow){
@@ -185,9 +194,27 @@ class MainActivity : ComponentActivity() {
 
                                     }
                                 },
-                                onDismiss = { isShow = false }
+                                onDismiss = {
+                                    isShow = false
+                                    countDownTimer.cancel()
+                                }
                             )
                         }
+
+                        if(isShowDialog) {
+                            CustomDialog(onDismiss = { isShowDialog = false }) {
+                                Column(
+                                    modifier = Modifier
+                                        .width(100.dp)
+                                        .height(100.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.Center
+                                ) {
+                                    Text(text = "다이얼로그")
+                                }
+                            }
+                        }
+
                     }
                 }
             }
