@@ -3,12 +3,9 @@ package com.hyosik.composepractice
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.text.TextPaint
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,9 +19,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Shapes
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,37 +29,26 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Paint
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
-import androidx.compose.ui.graphics.nativeCanvas
-import androidx.compose.ui.text.drawText
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.hyosik.composepractice.ui.theme.ComposePracticeTheme
-import androidx.activity.compose.setContent
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.*
-import androidx.compose.ui.res.imageResource
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.core.view.WindowCompat
 import com.hyosik.composepractice.ui.BottomSheet
 import com.hyosik.composepractice.ui.CustomDialog
-import kotlinx.coroutines.delay
 
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -103,6 +87,30 @@ class MainActivity : ComponentActivity() {
                             Text(text = "다이얼로그 오픈")
                         }
 
+                        val offsetY = remember {
+                            Animatable(0f)
+                        }
+
+                        LaunchedEffect(Unit) {
+                            offsetY.animateTo(
+                                targetValue = 70f,
+                                animationSpec = infiniteRepeatable(
+                                    animation = tween(
+                                        durationMillis = 1000,
+                                        easing = LinearEasing
+                                    ),
+                                    repeatMode = RepeatMode.Reverse
+                                )
+                            )
+                        }
+
+                        Image(
+                            modifier = Modifier.offset(y = offsetY.value.dp).width(200.dp).height(200.dp),
+                            painter = painterResource(id = R.drawable.potion),
+                            contentDescription = "앱 아이콘",
+                            contentScale = ContentScale.FillWidth
+                        )
+                        
 //                        if(isShow){
 //                            Box(
 //                                modifier = Modifier
