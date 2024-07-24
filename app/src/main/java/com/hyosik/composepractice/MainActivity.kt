@@ -124,7 +124,9 @@ class MainActivity : ComponentActivity() {
 
                         Text(
                             modifier = Modifier.fillMaxWidth(),
-                            text = getFontColorWithText(text = stringResource(id = R.string.test_color)),
+                            text = getFontColorWithText(text = stringResource(id = R.string.test_color, stringResource(
+                                id = R.string.day , 3
+                            ))),
                             fontSize = 30.sp,
                             textAlign = TextAlign.Center
                         )
