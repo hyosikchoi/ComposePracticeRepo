@@ -46,6 +46,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
 import com.hyosik.composepractice.ui.BottomSheet
 import com.hyosik.composepractice.ui.CustomDialog
@@ -104,13 +111,25 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
-                        Image(
-                            modifier = Modifier.offset(y = offsetY.value.dp).width(200.dp).height(200.dp),
-                            painter = painterResource(id = R.drawable.potion),
-                            contentDescription = "앱 아이콘",
-                            contentScale = ContentScale.FillWidth
+//                        Image(
+//                            modifier = Modifier
+//                                .offset(y = offsetY.value.dp)
+//                                .width(200.dp)
+//                                .height(200.dp),
+//                            painter = painterResource(id = R.drawable.potion),
+//                            contentDescription = "앱 아이콘",
+//                            contentScale = ContentScale.FillWidth
+//                        )
+
+
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = getFontColorWithText(text = stringResource(id = R.string.test_color)),
+                            fontSize = 30.sp,
+                            textAlign = TextAlign.Center
                         )
-                        
+
+
 //                        if(isShow){
 //                            Box(
 //                                modifier = Modifier
@@ -228,6 +247,39 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+}
+
+private fun getFontColorWithText(text: String): AnnotatedString {
+
+    val annotatedText = buildAnnotatedString {
+        var startIndex = 0
+        var endIndex: Int
+
+        // Iterate through the text and find segments wrapped with '*'
+        while (startIndex < text.length) {
+            endIndex = text.indexOf('*', startIndex)
+            if (endIndex == -1) {
+                append(text.substring(startIndex))
+                break
+            } else {
+                append(text.substring(startIndex, endIndex))
+                startIndex = endIndex + 1
+                endIndex = text.indexOf('*', startIndex)
+                if (endIndex == -1) {
+                    append(text.substring(startIndex))
+                    break
+                } else {
+                    withStyle(style = SpanStyle(color = Color.Red)) {
+                        append(text.substring(startIndex, endIndex))
+                    }
+                    startIndex = endIndex + 1
+                }
+            }
+        }
+    }
+
+    return annotatedText
+
 }
 
 

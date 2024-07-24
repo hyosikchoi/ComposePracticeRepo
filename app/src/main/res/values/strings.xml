@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ComposePractice</string>
+    <string name="test_color">Test *Color* Success</string>
 </resources>
