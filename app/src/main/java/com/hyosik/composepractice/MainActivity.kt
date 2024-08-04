@@ -1,5 +1,6 @@
 package com.hyosik.composepractice
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -55,6 +56,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
 import com.hyosik.composepractice.ui.BottomSheet
+import com.hyosik.composepractice.ui.CoordinatorLayoutActivity
 import com.hyosik.composepractice.ui.CustomDialog
 
 class MainActivity : ComponentActivity() {
@@ -92,6 +94,12 @@ class MainActivity : ComponentActivity() {
 
                         Button(onClick = { isShowDialog = !isShowDialog }) {
                             Text(text = "다이얼로그 오픈")
+                        }
+
+                        Button(onClick = {
+                            startActivity(Intent(this@MainActivity, CoordinatorLayoutActivity::class.java))
+                        }) {
+                            Text(text = "테스트 액티비티로 이동")
                         }
 
                         val offsetY = remember {
