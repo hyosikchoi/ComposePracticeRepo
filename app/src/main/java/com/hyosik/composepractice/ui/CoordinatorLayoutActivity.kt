@@ -51,23 +51,21 @@ class CoordinatorLayoutActivity : ComponentActivity() {
 
                     val colorWhenScrolled = Color.White
                     val colorWhenNotScrolled = Color.Black
-//
-                    var imageHeight by remember { mutableIntStateOf(0) }
-//
-//                    // Determine status bar color based on scroll position
-                    //TODO 리컴포지션의 원인 제공... remember 의 값이 바뀌면 동일 선상의 컴포저블들이 전부 리컴포지션 되는듯...
-//                    val statusBarColor by remember(scrollState.value) {
-//                        mutableStateOf(
-//                            if (scrollState.value > imageHeight) colorWhenScrolled else colorWhenNotScrolled
-//                        )
-//                    }
-//                  //TODO 추가적으로 key1 의 값이 변경 될 때마다 동일 선상의 컴포저블들 리컴포지션 됨.
-                    LaunchedEffect(key1 = scrollState.value) {
-//                        this@CoordinatorLayoutActivity.window.statusBarColor = if (scrollState.value > imageHeight) colorWhenScrolled.toArgb() else colorWhenNotScrolled.toArgb() // statusBar 색상 설정
-//                        WindowCompat.getInsetsController(this@CoordinatorLayoutActivity.window, this@CoordinatorLayoutActivity.window.decorView).apply {
-//                            isAppearanceLightStatusBars =
-//                                scrollState.value > imageHeight // statusBar 상단 아이콘 light, dark 설정
-//                        }
+
+                    // Determine status bar color based on scroll position
+                    var isStatusBarColorChanged by remember {
+                        mutableStateOf(false)
+                    }
+                    /** 리팩토링 성공!
+                     *  최대한 key 값이 여러번 바뀌지 않게끔 설계를 하자!
+                     *  key 값이 변경 될 때마다 동일 계층의 컴포넌트들이 리컴포지션 대상자가 된다는걸 잊지말자!
+                     */
+                    LaunchedEffect(key1 = isStatusBarColorChanged) {
+                        this@CoordinatorLayoutActivity.window.statusBarColor = if (isStatusBarColorChanged) colorWhenScrolled.toArgb() else colorWhenNotScrolled.toArgb() // statusBar 색상 설정
+                        WindowCompat.getInsetsController(this@CoordinatorLayoutActivity.window, this@CoordinatorLayoutActivity.window.decorView).apply {
+                            isAppearanceLightStatusBars =
+                                isStatusBarColorChanged // statusBar 상단 아이콘 light, dark 설정
+                        }
                     }
 
                     Column(
@@ -81,8 +79,10 @@ class CoordinatorLayoutActivity : ComponentActivity() {
                                 .wrapContentHeight()
                                 .onGloballyPositioned { coordinates ->
                                     val imageSize = coordinates.size
-                                    if (imageHeight != imageSize.height) {
-                                        imageHeight = imageSize.height
+                                    if (scrollState.value > imageSize.height && isStatusBarColorChanged.not()) {
+                                        isStatusBarColorChanged = true
+                                    } else if (scrollState.value <= imageSize.height && isStatusBarColorChanged) {
+                                        isStatusBarColorChanged = false
                                     }
                                 }
                             ,
